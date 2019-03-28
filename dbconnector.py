@@ -2,7 +2,7 @@ import sqlite3
 from flask import g
 
 # Path is NOT relative
-DATABASE = '/home/connor/Documents/softwareEng/bank3370_PythonGit/bank.db'
+DATABASE = 'E:/Code/Python/Bank3370_Python/Bank3370.db'
 
 def get_db():
     db = getattr(g, '_database', None)

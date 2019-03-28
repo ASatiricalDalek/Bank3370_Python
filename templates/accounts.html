@@ -8,7 +8,7 @@
     <form id="patronInfo" method="post">
         <select name="listOfPatrons">
             {% for patron in html_patrons %}
-                <option value={{ patron[1] }}>{{ patron[1] }}</option>
+                <option value={{ patron[0] }}>{{ patron[1] }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Get Info">
