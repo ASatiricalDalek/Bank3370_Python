@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank 3370 Accounts</title>
+</head>
+<body>
+    <form id="patronInfo" method="post">
+        <select name="listOfPatrons">
+            {% for patron in html_patrons %}
+                <option value={{ patron[1] }}>{{ patron[1] }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Get Info">
+    </form>
+    <p id="FirstName">{{ firstName }}</p>
+    <p id="LastName">{{ lastName }}</p>
+    <p id="email">{{ email }}</p>
+</body>
+</html>
