@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- If title is passed to the template -->
+    {% if title %}
+    <title>{{ title }} - Bank 3370</title>
+    {% else %}
+    <title>Welcome to Bank 3370</title>
+    {% endif %}
+</head>
+<body>
+    <div id="nav">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('login') }}">Login</a>
+    </div>
+    <hr>
+    <!-- Any flashed messages sent to the template are assigned to the messages variable (Tutorial Pt 3 -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>
