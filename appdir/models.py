@@ -1,8 +1,10 @@
 # coding: utf-8
 from sqlalchemy import Column, ForeignKey, Integer, Numeric, Text
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from appdir import db
+from sqlalchemy.orm import relationship
+from appdir import db, login
+from werkzeug.security import generate_password_hash, check_password_hash # Used for hashing PWs
+from flask_login import UserMixin  # Used for adding login features to the patron class
 
 
 class BankAccountType(db.Model):
@@ -27,10 +29,11 @@ class LoanType(db.Model):
         return '<Loan Category (type) {}>'.format(self.loanCategory)
 
 
-class Patron(db.Model):
+# adding UserMixin comes from flask_login to add requirements to this class to work with that library
+class Patron(UserMixin, db.Model):
     __tablename__ = 'patron'
 
-    Id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     patronFirstName = db.Column(db.Text, nullable=False)
     patronLastName = db.Column(db.Text, nullable=False)
     patronEmail = db.Column(db.Text, nullable=False)
@@ -39,6 +42,13 @@ class Patron(db.Model):
     def __repr__(self):
         # How this class is printed
         return '<User Email {}>'.format(self.patronEmail)
+
+    # Functions for hashing and then reading the passwords
+    def setPassword(self, password):
+        self.password = generate_password_hash(password)
+
+    def checkPassword(self, password):
+        return check_password_hash(self.password, password)
 
 
 class BankAccount(db.Model):
@@ -60,7 +70,7 @@ class BankAccount(db.Model):
 class Loan(db.Model):
     __tablename__ = 'loans'
 
-    Id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     loanPayment = db.Column(db.Numeric, nullable=False)
     loanBalance = db.Column(db.Numeric, nullable=False)
     startDate = db.Column(db.Text, nullable=False)
@@ -71,16 +81,23 @@ class Loan(db.Model):
 
     def __repr__(self):
         # How this class is printed
-        return '<Loan ID {}>'.format(self.Id)
+        return '<Loan ID {}>'.format(self.id)
+
 
 class patronBankAccounts(db.Model):
     __tablename__ = 'patronBankAccounts'
 
-    id_patron = db.Column(db.Integer, db.ForeignKey('patron.Id'), primary_key=True)
+    id_patron = db.Column(db.Integer, db.ForeignKey('patron.id'), primary_key=True)
     id_account = db.Column(db.Integer, db.ForeignKey('bankAccount.id'), primary_key=True)
+
 
 class patronLoanAccounts(db.Model):
     __tablename__ = 'patronLoanAccounts'
 
-    id_patron = db.Column(db.Integer, db.ForeignKey('patron.Id'), primary_key=True)
-    id_account = db.Column(db.Integer, db.ForeignKey('loans.Id'), primary_key=True)
+    id_patron = db.Column(db.Integer, db.ForeignKey('patron.id'), primary_key=True)
+    id_account = db.Column(db.Integer, db.ForeignKey('loans.id'), primary_key=True)
+
+
+@login.user_loader
+def loadUser(id):
+    return Patron.query.get(int(id))

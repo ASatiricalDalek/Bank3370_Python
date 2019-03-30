@@ -1,5 +1,8 @@
 import os
 
+# Application configuration information
+
+# Path to this program
 baseDir = os.path.abspath(os.path.dirname(__file__))
 
 # Use either the environment variable, SECRET_KEY or a hard coded string
