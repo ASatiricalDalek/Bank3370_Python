@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
-from appdir import app
-from appdir.forms import LoginForm
+from appdir import app, db
+from appdir.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
@@ -53,3 +53,20 @@ def logout():
 @login_required
 def accounts():
     return render_template('accounts.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        patron = Patron()
+        patron.patronFirstName = form.firstName.data
+        patron.patronLastName = form.lastName.data
+        patron.patronEmail = form.email.data
+        patron.setPassword(form.password.data)
+        db.session.add(patron)
+        db.session.commit()
+        flash("Congratulations " + form.firstName.data + " you are now a registered user")
+        return redirect(url_for('login'))
+    return(render_template('register.html', title='Register', form=form))
