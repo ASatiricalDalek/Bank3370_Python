@@ -65,6 +65,11 @@ def accounts(id):
         else:
             flash(accountType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
+    else:
+        thisPatronsAccounts = PatronBankAccounts()
+
+        listOfAccounts = thisPatronsAccounts.query.filter_by(id_patron=current_user.get_id()).all()
+        # Using this list of all the account IDs, query the bankAccount table to find all this patron's accounts
     return render_template('accounts.html', form=form)
 
 
@@ -84,9 +89,11 @@ def newCheckingAccount(id):
         else:
             newAccount.insurance = 0
 
+        # Provisionally adds this account to the DB so it gets a unique ID
         db.session.add(newAccount)
         db.session.flush()
 
+        # Use that unique ID, and the current user's sessions ID to create the relationship
         newAccountRelation.id_bankAccount = newAccount.id
         newAccountRelation.id_patron = current_user.get_id()
 
