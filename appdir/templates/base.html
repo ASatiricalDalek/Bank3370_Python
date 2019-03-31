@@ -18,8 +18,8 @@
         <a href="{{ url_for('register') }}">Register</a>
         {% else %}
         <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a>
         {% endif %}
-        <a href="{{ url_for('accounts') }}">Accounts</a>
     </div>
     <hr>
     <!-- Any flashed messages sent to the template are assigned to the messages variable (Tutorial Pt 3 -->

@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir.forms import LoginForm, RegistrationForm
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType
 from flask_login import current_user, login_user, logout_user, login_required
-from appdir.models import Patron
+from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
 
 # routes contains the logic for all of our pages
@@ -49,10 +49,55 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/accounts')
+@app.route('/accounts/<id>', methods=['GET', 'POST'])
 @login_required
-def accounts():
-    return render_template('accounts.html')
+def accounts(id):
+    form = NewAccountType()
+    if form.validate_on_submit():
+        accountType = form.accountChoice.data
+        if accountType == "Checking":
+            flash("Checking Account Selected")
+            return redirect(url_for('newCheckingAccount', id=current_user.get_id()))
+        elif accountType == "Savings":
+            flash("Savings Account Selected")
+        elif accountType == "Retirement":
+            flash("Retirement Account Selected")
+        else:
+            flash(accountType + " Selected")
+        return redirect(url_for('accounts', id=current_user.get_id()))
+    return render_template('accounts.html', form=form)
+
+
+@app.route('/accounts/<id>/new_account', methods=['GET', 'POST'])
+@login_required
+def newCheckingAccount(id):
+    form = CreateCheckingAccountForm()
+    if form.validate_on_submit():
+        newAccount = BankAccount()
+        newAccountRelation = PatronBankAccounts()
+
+        newAccount.accountType = "Checking"
+        newAccount.accountBalance = 0
+        newAccount.accountName = form.accountName.data
+        if (form.insurance.data):
+            newAccount.insurance = 1
+        else:
+            newAccount.insurance = 0
+
+        db.session.add(newAccount)
+        db.session.flush()
+
+        newAccountRelation.id_bankAccount = newAccount.id
+        newAccountRelation.id_patron = current_user.get_id()
+
+        db.session.add(newAccountRelation)
+        db.session.commit()
+
+        flash("Checking account successfully created!")
+        return redirect(url_for('accounts', id=current_user.get_id()) )
+
+    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

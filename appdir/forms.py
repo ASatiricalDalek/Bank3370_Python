@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField # No custom variations in Flask_WTF
+# No custom variations in Flask_WTF
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from appdir.models import Patron
+from appdir.models import Patron, BankAccountType
 
 # Define the login class using the WTForms library in Python
 # This library also contains code to generate the HTML elements so we don't need to define those
@@ -16,7 +17,7 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     firstName = StringField('First Name', validators=[DataRequired()])
     lastName = StringField('Last Name', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirmPassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
@@ -27,3 +28,17 @@ class RegistrationForm(FlaskForm):
         patrons = Patron.query.filter_by(patronEmail=email.data).first()
         if patrons is not None:
             raise ValidationError('Patron with this email already exists!')
+
+
+class CreateCheckingAccountForm(FlaskForm):
+    accountName = StringField('Account Name', validators=[DataRequired()])
+    insurance = BooleanField('Insurance')
+    submit = SubmitField('Submit', validators=[DataRequired()])
+
+
+class NewAccountType(FlaskForm):
+    # This *should* be pulled from the database, but it's not
+    # Choices are in the format (value, display)
+    choices = [('Checking', 'Checking'), ('Savings', 'Savings'), ('Retirement', 'Retirement')]
+    accountChoice = RadioField(label="Select and account type", choices=choices, validators=[DataRequired()])
+    submit = SubmitField(label="Open my Account")

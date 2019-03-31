@@ -84,14 +84,14 @@ class Loan(db.Model):
         return '<Loan ID {}>'.format(self.id)
 
 
-class patronBankAccounts(db.Model):
+class PatronBankAccounts(db.Model):
     __tablename__ = 'patronBankAccounts'
 
     id_patron = db.Column(db.Integer, db.ForeignKey('patron.id'), primary_key=True)
-    id_account = db.Column(db.Integer, db.ForeignKey('bankAccount.id'), primary_key=True)
+    id_bankAccount = db.Column(db.Integer, db.ForeignKey('bankAccount.id'), primary_key=True)
 
 
-class patronLoanAccounts(db.Model):
+class PatronLoanAccounts(db.Model):
     __tablename__ = 'patronLoanAccounts'
 
     id_patron = db.Column(db.Integer, db.ForeignKey('patron.id'), primary_key=True)

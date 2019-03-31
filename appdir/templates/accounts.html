@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Welcome to your account {{ current_user.username }}</h1>
+    <h1>Welcome to your account {{ current_user.get_id() }}</h1>
+    <br>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.accountChoice.lable }}
+            <br>
+            {{ form.accountChoice }}
+            {% for error in form.accountChoice.errors %}
+            <span>{{ [ error ] }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit }}
+        </p>
+    </form>
 {% endblock %}
