@@ -42,3 +42,13 @@ class NewAccountType(FlaskForm):
     choices = [('Checking', 'Checking'), ('Savings', 'Savings'), ('Retirement', 'Retirement')]
     accountChoice = RadioField(label="Select and account type", choices=choices, validators=[DataRequired()])
     submit = SubmitField(label="Open my Account")
+
+
+class CreditScoreForm(FlaskForm):
+    averageAge = StringField('Average Age', validators=[DataRequired()])
+    hardInquiries = StringField('Hard Inquiries', validators=[DataRequired()])
+    creditUtilization = StringField('Credit Utilization', validators=[DataRequired()])
+    latePay = StringField('Late Payments', validators=[DataRequired()])
+    totalAccounts = StringField('Total Accounts', validators=[DataRequired()])
+    derogatoryMarks = StringField('Derogatory Marks', validators=[DataRequired()])
+    submit = SubmitField('CreditScore')

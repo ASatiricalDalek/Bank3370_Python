@@ -113,7 +113,11 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         patron = Patron()
-        patron.patronFirstName = form.firstName.data
+        creditscore.creditScoreAverageAge = form.averageAge.data
+        creditscore.creditScoreHardInquiries = form.hardInquiries.data
+        creditscore.creditScore = form.creditUtilization.data
+        creditscore.creditScoreAverageAge = form.averageAge.data
+        creditscore.creditScore = form.averageAge.data
         patron.patronLastName = form.lastName.data
         patron.patronEmail = form.email.data
         patron.setPassword(form.password.data)
@@ -122,3 +126,23 @@ def register():
         flash("Congratulations " + form.firstName.data + " you are now a registered user")
         return redirect(url_for('login'))
     return(render_template('register.html', title='Register', form=form))
+
+@app.route('/creditScore', methods=['GET', 'POST'])
+def creditscore():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = creditscore()
+    if form.validate_on_submit():
+        patroncr = Patron()
+        patron. = form.firstName.data
+        creditscore.creditScoreAverageAge = form.averageAge.data
+        creditscore.creditScoreHardInquiries = form.hardInquiries.data
+        creditscore.creditScoreCreditUtilization = form.creditUtilization.data
+        creditscore.creditScoreLatePay = form.latePay.data
+        creditscore.creditScoreTotalAccounts = form.totalAccounts.data
+        creditscore.creditScoreDerogatoryMarks = form.derogatoryMarks.data
+        patron.patronLastName = form.lastName.data
+
+        flash("Congratulations your Credit Score is " + form..data + " you are now a registered user")
+        return redirect(url_for('login'))
+    return(render_template('creditScore.html', title='Credit Score', form=form))
