@@ -38,6 +38,12 @@ class CreateSavingsAccountForm(FlaskForm):
     submit = SubmitField('Submit', validators=[DataRequired()])
 
 
+class CreateRetirementAccountForm(FlaskForm):
+    accountName = StringField('Account Name', validators=[DataRequired()])
+    insurance = BooleanField('Insurance')
+    submit = SubmitField('Submit', validators=[DataRequired()])
+
+
 class CreateCheckingAccountForm(FlaskForm):
     accountName = StringField('Account Name', validators=[DataRequired()])
     insurance = BooleanField('Insurance')
