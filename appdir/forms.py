@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 # No custom variations in Flask_WTF
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from appdir.models import Patron, BankAccountType
 
@@ -42,3 +42,14 @@ class NewAccountType(FlaskForm):
     choices = [('Checking', 'Checking'), ('Savings', 'Savings'), ('Retirement', 'Retirement')]
     accountChoice = RadioField(label="Select and account type", choices=choices, validators=[DataRequired()])
     submit = SubmitField(label="Open my Account")
+
+
+
+class NewLoanType (FlaskForm) :
+    choices = [('Auto' , 'Auto'), ('')]
+class CreateAutoLoanForm(FlaskForm):
+        accountName = StringField('Account Name', validators=[DataRequired()])
+        loanPayment = FloatField('Account Payment')
+        loanBalance = FloatField('Account Balance')
+
+        submit = SubmitField('Submit', validators=[DataRequired()])

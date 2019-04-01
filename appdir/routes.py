@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, NewLoansType
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
@@ -11,6 +11,7 @@ from werkzeug.urls import url_parse # used to redirect users to the page they we
 @app.route('/index')
 def index():
     return render_template('home.html', title = 'Home')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -73,6 +74,26 @@ def accounts(id):
     return render_template('accounts.html', form=form)
 
 
+@app.route('/loans/<id>', methods=['GET', 'POST'])
+@login_required
+def loans(id):
+    form = NewLoansType()
+    if form.validate_on_submit():
+        loansType = form.accountChoice.data
+        if loansType == "Auto Loans":
+            flash("Auto Loans Selected")
+            return redirect(url_for('newCheckingAccount', id=current_user.get_id()))
+        elif loansType == "Student loans":
+            flash("Student Loans Selected")
+        elif loansType == "Home Loans":
+            flash("Home Loans Selected")
+        else:
+            flash(loansType + " Selected")
+        return redirect(url_for('loans', id=current_user.get_id()))
+
+    return render_template('loans.html', form=form)
+
+
 @app.route('/accounts/<id>/new_account', methods=['GET', 'POST'])
 @login_required
 def newCheckingAccount(id):
@@ -80,6 +101,39 @@ def newCheckingAccount(id):
     if form.validate_on_submit():
         newAccount = BankAccount()
         newAccountRelation = PatronBankAccounts()
+
+        newAccount.accountType = "Checking"
+        newAccount.accountBalance = 0
+        newAccount.accountName = form.accountName.data
+        if (form.insurance.data):
+            newAccount.insurance = 1
+        else:
+            newAccount.insurance = 0
+
+        # Provisionally adds this account to the DB so it gets a unique ID
+        db.session.add(newAccount)
+        db.session.flush()
+
+        # Use that unique ID, and the current user's sessions ID to create the relationship
+        newAccountRelation.id_bankAccount = newAccount.id
+        newAccountRelation.id_patron = current_user.get_id()
+
+        db.session.add(newAccountRelation)
+        db.session.commit()
+
+        flash("Checking account successfully created!")
+        return redirect(url_for('accounts', id=current_user.get_id()) )
+
+    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
+
+
+@app.route('/loans/<id>/new_loans', methods=['GET', 'POST'])
+@login_required
+def newAutoLoan(id):
+    form = CreateAutoLoanForm()
+    if form.validate_on_submit():
+        newLoan = LoanType()
+        newLoanRelation = PatronLoanAccount()
 
         newAccount.accountType = "Checking"
         newAccount.accountBalance = 0
