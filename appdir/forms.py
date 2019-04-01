@@ -7,6 +7,8 @@ from appdir.models import Patron, BankAccountType
 # Define the login class using the WTForms library in Python
 # This library also contains code to generate the HTML elements so we don't need to define those
 # On the page
+
+
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -28,6 +30,12 @@ class RegistrationForm(FlaskForm):
         patrons = Patron.query.filter_by(patronEmail=email.data).first()
         if patrons is not None:
             raise ValidationError('Patron with this email already exists!')
+
+
+class CreateSavingsAccountForm(FlaskForm):
+    accountName = StringField('Account Name', validators=[DataRequired()])
+    insurance = BooleanField('Insurance')
+    submit = SubmitField('Submit', validators=[DataRequired()])
 
 
 class CreateCheckingAccountForm(FlaskForm):
