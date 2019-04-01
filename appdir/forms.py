@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 # No custom variations in Flask_WTF
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from appdir.models import Patron, BankAccountType
+from appdir.models import Patron, BankAccountType, BankAccount, PatronBankAccounts
 
 # Define the login class using the WTForms library in Python
 # This library also contains code to generate the HTML elements so we don't need to define those
@@ -42,3 +43,16 @@ class NewAccountType(FlaskForm):
     choices = [('Checking', 'Checking'), ('Savings', 'Savings'), ('Retirement', 'Retirement')]
     accountChoice = RadioField(label="Select and account type", choices=choices, validators=[DataRequired()])
     submit = SubmitField(label="Open my Account")
+
+
+class MakeDeposit(FlaskForm):
+    user = current_user.get_id()
+    patronsAccounts=PatronBankAccounts.query.filter_by(id_patron=user).all()
+    bankAccounts=[bankID for (patronID, bankID) in patronsAccounts if patronID == user]
+
+    namedAccounts = []
+
+    for account in bankAccounts:
+        acc = BankAccount.query.filter_by(id=account).all()
+        namedAccounts.append(acc)
+
