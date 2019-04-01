@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir import accounts
+from appdir.accounts import getPatronAccounts
 from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
@@ -67,9 +67,9 @@ def accounts(id):
             flash(accountType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
     else:
-        thisPatronsAccounts = PatronBankAccounts()
+        thisPatronsAccounts = getPatronAccounts(current_user.get_id())
+        flash(thisPatronsAccounts)
 
-        listOfAccounts = thisPatronsAccounts.query.filter_by(id_patron=current_user.get_id()).all()
         # Using this list of all the account IDs, query the bankAccount table to find all this patron's accounts
     return render_template('accounts.html', form=form)
 
