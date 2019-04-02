@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
 from appdir.accounts import getPatronAccounts
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, MakeDeposit
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
@@ -123,3 +123,9 @@ def register():
         flash("Congratulations " + form.firstName.data + " you are now a registered user")
         return redirect(url_for('login'))
     return(render_template('register.html', title='Register', form=form))
+
+@app.route('/accounts/<id>/deposit', methods=['GET', 'POST'])
+@login_required
+def dep(id):
+    form = MakeDeposit()
+    return render_template('deposit.html', title ='Deposit', form=form)

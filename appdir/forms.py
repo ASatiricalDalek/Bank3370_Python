@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from appdir.accounts import getPatronAccounts
 from flask_login import current_user
 # No custom variations in Flask_WTF
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
@@ -45,14 +46,12 @@ class NewAccountType(FlaskForm):
     submit = SubmitField(label="Open my Account")
 
 
-# class MakeDeposit(FlaskForm):
-#     user = current_user.get_id()
-#     patronsAccounts=PatronBankAccounts.query.filter_by(id_patron=user).all()
-#     bankAccounts=[bankID for (patronID, bankID) in patronsAccounts if patronID == user]
-#
-#     namedAccounts = []
-#
-#     for account in bankAccounts:
-#         acc = BankAccount.query.filter_by(id=account).all()
-#         namedAccounts.append(acc)
+class MakeDeposit(FlaskForm):
+    x = getPatronAccounts(2)
+    newList=[]
+    for choice in x:
+        newList.append(choice.accountName)
 
+    amount = StringField('Deposit Amount', validators=[DataRequired()])
+    accountChoice = SelectField(label="Select Account", choices = newList, validators=[DataRequired()])
+    submit = SubmitField(label="Deposit")
