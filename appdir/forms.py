@@ -47,9 +47,12 @@ class NewAccountType(FlaskForm):
 
 
 class MakeDeposit(FlaskForm):
+    # This returns a list of account objects associated with the given patron ID
     x = getPatronAccounts(2)
+    # this will be a list of tuples to be used as a data source for our account listing
     newList = []
     for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
         newList.append((account.id,account.accountName))
 
     amount = StringField('Deposit Amount', validators=[DataRequired()])
