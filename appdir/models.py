@@ -56,7 +56,7 @@ class BankAccount(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     accountName = db.Column(db.Text, nullable=False)
-    accountBalance = db.Column(db.Text, nullable=False)
+    accountBalance = db.Column(db.REAL, nullable=False)
     insurance = db.Column(db.Integer, nullable=False)
     accountType = db.Column(db.ForeignKey('bankAccountType.accountType'), nullable=False)
 

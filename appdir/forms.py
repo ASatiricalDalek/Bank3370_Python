@@ -48,10 +48,10 @@ class NewAccountType(FlaskForm):
 
 class MakeDeposit(FlaskForm):
     x = getPatronAccounts(2)
-    newList=[]
-    for choice in x:
-        newList.append(choice.accountName)
+    newList = []
+    for account in x:
+        newList.append((account.id,account.accountName))
 
     amount = StringField('Deposit Amount', validators=[DataRequired()])
-    accountChoice = SelectField(label="Select Account", choices = newList, validators=[DataRequired()])
+    accountChoice = SelectField(label="Select Account", choices =newList, validators=[DataRequired()])
     submit = SubmitField(label="Deposit")
