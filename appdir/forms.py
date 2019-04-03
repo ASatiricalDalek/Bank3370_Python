@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from appdir.accounts import getPatronAccounts
 from flask_login import current_user
 # No custom variations in Flask_WTF
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from appdir.models import Patron, BankAccountType, BankAccount, PatronBankAccounts
 
@@ -47,7 +47,8 @@ class NewAccountType(FlaskForm):
 
 
 class MakeDeposit(FlaskForm):
-    amount = StringField('Deposit Amount', validators=[DataRequired()])
+    amount = FloatField('Deposit Amount', validators=[DataRequired()], id='dep_amount')
     # choices is filled at run time from routes.py
-    accountChoice = SelectField(label="Select Account", choices =[], validators=[DataRequired()], coerce=int)
+    accountChoice = SelectField(label="Select Account", choices =[], validators=[DataRequired()], id='select_account')
+    # accountChoice = SelectField(label="Select Account", choices=[('Robs Checking', 'Robs Checking')], validators=[DataRequired()])
     submit = SubmitField(label="Deposit")

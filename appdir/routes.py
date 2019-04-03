@@ -124,16 +124,40 @@ def register():
         return redirect(url_for('login'))
     return(render_template('register.html', title='Register', form=form))
 
+
 @app.route('/accounts/<id>/deposit', methods=['GET', 'POST'])
 @login_required
 def dep(id):
-    # This returns a list of account objects associated with the given patron ID
+
+    form = MakeDeposit()
     x = getPatronAccounts(current_user.get_id())
     # this will be a list of tuples to be used as a data source for our account listing
     newList = []
     for account in x:
         # data source expects a value and display member, so pass ID and account name of the object
-        newList.append((account.id, account.accountName))
-    form = MakeDeposit()
+        newList.append((account.accountName, account.accountName))
     form.accountChoice.choices = newList
-    return render_template('deposit.html', title ='Deposit', form=form)
+    # value = form.accountChoice.data
+
+    if form.validate_on_submit():
+        # x = getPatronAccounts(current_user.get_id())
+        value = form.accountChoice.data
+        accountToDep = BankAccount.query.filter_by(accountName= value).first()
+        # account = form.accountChoice
+        depAmount = form.amount.data
+        accountToDep.accountBalance += depAmount
+        db.session.commit()
+        flash("This deposit has been completed")
+        return redirect(url_for('index'))
+    else:
+        # This returns a list of account objects associated with the given patron ID
+        # flash(value)
+        return render_template('deposit.html', title ='Deposit', form=form)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+    # valueCheck= BankAccount.query.filter_by(accountName= 'Robs Checking').first()
+    # valueCheck.accountBalance +=200
+    # value=valueCheck.accountBalance
+    # db.session.commit()
