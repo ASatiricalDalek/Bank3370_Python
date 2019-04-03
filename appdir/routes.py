@@ -137,7 +137,7 @@ def creditScore():
         latePay = form.latePay.data
         totalAccounts = form.totalAccounts.data
         derogatoryMarks = form.derogatoryMarks.data
-        
+
         if (averageAge < 0 or hardInquiries < 0 or creditUtilization < 0 or latePay < 0 or totalAccounts <0 or derogatoryMarks <0):
             flash("Please enter positive numeric values")
             return render_template('creditScore.html', title='Credit Score', form=form)

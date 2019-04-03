@@ -4,4 +4,14 @@
 <!-- Inserts all the code in this block in the corresponding content block in base.html -->
 {% block content %}
     <h1>Welcome to Bank 3370</h1>
+    {% if bankaccounts != None %}
+    {% for account in bankaccounts %}
+    <table id="accountList">
+        <tr>
+            <td class="names">{{ account.accountName }}</td>
+            <td class="amnts">${{ account.accountBalance }}</td>
+        </tr>
+    </table>
+    {% endfor %}
+    {% endif %}
 {% endblock %}
