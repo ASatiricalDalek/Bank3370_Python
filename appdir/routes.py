@@ -5,6 +5,7 @@ from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm,
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
+from math import floor
 
 # routes contains the logic for all of our pages
 
@@ -137,21 +138,17 @@ def dep(id):
         # data source expects a value and display member, so pass ID and account name of the object
         newList.append((account.accountName, account.accountName))
     form.accountChoice.choices = newList
-    # value = form.accountChoice.data
 
     if form.validate_on_submit():
-        # x = getPatronAccounts(current_user.get_id())
         value = form.accountChoice.data
         accountToDep = BankAccount.query.filter_by(accountName= value).first()
-        # account = form.accountChoice
         depAmount = form.amount.data
+        depAmount= (floor(depAmount*100)/100)  # drops decimal places after hundredths without rounding
         accountToDep.accountBalance += depAmount
         db.session.commit()
-        flash("This deposit has been completed")
+        flash("Deposit of $" + str(depAmount) + " to " + value + " was successful!")
         return redirect(url_for('index'))
     else:
-        # This returns a list of account objects associated with the given patron ID
-        # flash(value)
         return render_template('deposit.html', title ='Deposit', form=form)
 
     # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
@@ -178,20 +175,18 @@ def tran(id):
     # value = form.accountChoice.data
 
     if form.validate_on_submit():
-        # x = getPatronAccounts(current_user.get_id())
         oacc = form.originaccount.data
         dacc = form.destaccount.data
         fromacc = BankAccount.query.filter_by(accountName=oacc).first()
         toacc = BankAccount.query.filter_by(accountName=dacc).first()
 
         tamt = form.tamount.data
+        tamt = (floor(tamt*100)/100)  # drops decimal places after hundredths without rounding
         fromacc.accountBalance -= tamt
         toacc.accountBalance += tamt
 
         db.session.commit()
-        flash("This transfer has been completed")
+        flash("Transfer from "+oacc+" to "+dacc+" of $"+str(tamt)+" was successful!")
         return redirect(url_for('index'))
     else:
-        # This returns a list of account objects associated with the given patron ID
-        # flash(value)
         return render_template('transfer.html', title='Transfer', form=form)

@@ -55,7 +55,7 @@ class MakeDeposit(FlaskForm):
 
 
 class MakeTransfer(FlaskForm):
-    tamount = FloatField('Deposit Amount', validators=[DataRequired()], id='dep_amount')
+    tamount = FloatField('Transfer Amount', validators=[DataRequired()], id='dep_amount')
     originaccount = SelectField(label="From Account", choices=[], validators=[DataRequired()], id='from_account')
     destaccount = SelectField(label="To Account", choices=[], validators=[DataRequired()], id='to_account')
     submit = SubmitField(label="Transfer")
