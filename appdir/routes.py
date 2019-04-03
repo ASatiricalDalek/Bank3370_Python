@@ -105,7 +105,7 @@ def newCheckingAccount(id):
         flash("Checking account successfully created!")
         return redirect(url_for('accounts', id=current_user.get_id()) )
 
-    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
+    return render_template('newCheckingAccount.html', title='Open a Checking Account', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -144,12 +144,16 @@ def dep(id):
         accountToDep = BankAccount.query.filter_by(accountName= value).first()
         depAmount = form.amount.data
         depAmount= (floor(depAmount*100)/100)  # drops decimal places after hundredths without rounding
-        accountToDep.accountBalance += depAmount
-        db.session.commit()
-        flash("Deposit of $" + str(depAmount) + " to " + value + " was successful!")
-        return redirect(url_for('index'))
+        if depAmount<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('deposit.html', title='Deposit', form=form)
+        else:
+            accountToDep.accountBalance += depAmount
+            db.session.commit()
+            flash("Deposit of $" + str(depAmount) + " to " + value + " was successful!")
+            return redirect(url_for('index'))
     else:
-        return render_template('deposit.html', title ='Deposit', form=form)
+        return render_template('deposit.html', title='Deposit', form=form)
 
     # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
 
@@ -172,8 +176,8 @@ def tran(id):
         newList.append((account.accountName, account.accountName))
     form.originaccount.choices = newList
     form.destaccount.choices = newList
-    # value = form.accountChoice.data
 
+    # user attempts to perform a transfer
     if form.validate_on_submit():
         oacc = form.originaccount.data
         dacc = form.destaccount.data
@@ -182,11 +186,26 @@ def tran(id):
 
         tamt = form.tamount.data
         tamt = (floor(tamt*100)/100)  # drops decimal places after hundredths without rounding
-        fromacc.accountBalance -= tamt
-        toacc.accountBalance += tamt
 
-        db.session.commit()
-        flash("Transfer from "+oacc+" to "+dacc+" of $"+str(tamt)+" was successful!")
-        return redirect(url_for('index'))
+        # If users origin account has insufficient funds, the transfer will fail
+        if fromacc.accountBalance<tamt:
+            flash("Insufficient funds in "+oacc+" to complete transfer. Please try again.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # if user tries to transfer to and from the same account, transfer will will
+        elif fromacc == toacc:
+            flash("Please select unique origin and destination accounts.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        elif tamt<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # user has entered valid parameters
+        else:
+            fromacc.accountBalance -= tamt
+            toacc.accountBalance += tamt
+
+            db.session.commit()
+            flash("Transfer from "+oacc+" to "+dacc+" of $"+str(tamt)+" was successful!")
+            return redirect(url_for('index'))
+    # user is load form for the first time
     else:
         return render_template('transfer.html', title='Transfer', form=form)

@@ -47,15 +47,14 @@ class NewAccountType(FlaskForm):
 
 
 class MakeDeposit(FlaskForm):
-    amount = FloatField('Deposit Amount', validators=[DataRequired()], id='dep_amount')
+    amount = FloatField('Deposit Amount', validators=[DataRequired(message="Please enter amount in numeric format. Example: 200 or 200.00")], id='dep_amount')
     # choices is filled at run time from routes.py
     accountChoice = SelectField(label="Select Account", choices =[], validators=[DataRequired()], id='select_account')
-    # accountChoice = SelectField(label="Select Account", choices=[('Robs Checking', 'Robs Checking')], validators=[DataRequired()])
     submit = SubmitField(label="Deposit")
 
 
 class MakeTransfer(FlaskForm):
-    tamount = FloatField('Transfer Amount', validators=[DataRequired()], id='dep_amount')
+    tamount = FloatField('Transfer Amount', validators=[DataRequired(message="Please enter amount in numeric format. Example: 200 or 200.00")], id='dep_amount')
     originaccount = SelectField(label="From Account", choices=[], validators=[DataRequired()], id='from_account')
     destaccount = SelectField(label="To Account", choices=[], validators=[DataRequired()], id='to_account')
     submit = SubmitField(label="Transfer")

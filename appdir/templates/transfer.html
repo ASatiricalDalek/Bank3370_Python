@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+    <style>
+    span{
+        color: red;
+        font-weight: bold;
+    }
+    </style>
+
     <h1>Perform a Transfer</h1>
 
     <form action="" method="post" novalidate>
@@ -22,7 +30,7 @@
             {{ form.tamount(size=32) }}
             <br>
             {% for error in form.tamount.errors %}
-            <span>{{ [ error ] }}</span>
+            <span>{{  error  }}</span>
             {% endfor %}
         </p>
         <p>
