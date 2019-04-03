@@ -84,7 +84,7 @@ def loans(id):
         if loansType == "Auto Loans":
             flash("Auto Loans Selected")
             return redirect(url_for('newAutoLoan', id=current_user.get_id()))
-        elif loansType == "Student loans":
+        elif loansType == "Student Loans":
             flash("Student Loans Selected")
             return redirect(url_for('newStudentLoan', id=current_user.get_id()))
         elif loansType == "Home Loans":
@@ -127,10 +127,10 @@ def newCheckingAccount(id):
         flash("Checking account successfully created!")
         return redirect(url_for('accounts', id=current_user.get_id()))
 
-    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
+    return render_template('newCheckingAccount.html', title='Open a Checking Account', form=form)
 
 
-@app.route('/loans/<id>/new_loans', methods=['GET', 'POST'])
+@app.route('/loans/<id>/newAutoLoan', methods=['GET', 'POST'])
 @login_required
 def newAutoLoan(id):
     form = CreateAutoLoanForm()
@@ -159,7 +159,7 @@ def newAutoLoan(id):
     return render_template('newAutoLoan.html', title='Open a Auto Loan', form=form)
 
 
-@app.route('/loans/<id>/new_loans', methods=['GET', 'POST'])
+@app.route('/loans/<id>/newStudentLoan', methods=['GET', 'POST'])
 @login_required
 def newStudentLoan(id):
     form = CreateStudentLoanForm()
@@ -188,7 +188,7 @@ def newStudentLoan(id):
     return render_template('newStudentLoan.html', title='Open a Student Loan', form=form)
 
 
-@app.route('/loans/<id>/new_loans', methods=['GET', 'POST'])
+@app.route('/loans/<id>/newHomeLoan', methods=['GET', 'POST'])
 @login_required
 def newHomeLoan(id):
     form = CreateHomeLoanForm()
