@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
 from appdir.accounts import getPatronAccounts
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, MakeDeposit
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, MakeDeposit, MakeTransfer
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
@@ -161,3 +161,37 @@ def dep(id):
     # valueCheck.accountBalance +=200
     # value=valueCheck.accountBalance
     # db.session.commit()
+
+
+@app.route('/accounts/<id>/transfer', methods=['GET', 'POST'])
+@login_required
+def tran(id):
+    form = MakeTransfer()
+    x = getPatronAccounts(current_user.get_id())
+    # this will be a list of tuples to be used as a data source for our account listing
+    newList = []
+    for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
+        newList.append((account.accountName, account.accountName))
+    form.originaccount.choices = newList
+    form.destaccount.choices = newList
+    # value = form.accountChoice.data
+
+    if form.validate_on_submit():
+        # x = getPatronAccounts(current_user.get_id())
+        oacc = form.originaccount.data
+        dacc = form.destaccount.data
+        fromacc = BankAccount.query.filter_by(accountName=oacc).first()
+        toacc = BankAccount.query.filter_by(accountName=dacc).first()
+
+        tamt = form.tamount.data
+        fromacc.accountBalance -= tamt
+        toacc.accountBalance += tamt
+
+        db.session.commit()
+        flash("This transfer has been completed")
+        return redirect(url_for('index'))
+    else:
+        # This returns a list of account objects associated with the given patron ID
+        # flash(value)
+        return render_template('transfer.html', title='Transfer', form=form)

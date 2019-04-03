@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Perform a Transfer</h1>
+
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+    <p>
+        {{ form.originaccount.label }}
+        <br>
+        {{ form.originaccount }}
+    </p>
+        <p>
+        <p>
+        {{ form.destaccount.label }}
+        <br>
+        {{ form.destaccount }}
+    </p>
+        <p>
+            {{ form.tamount.label }}
+            <br>
+            {{ form.tamount(size=32) }}
+            <br>
+            {% for error in form.tamount.errors %}
+            <span>{{ [ error ] }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit }}
+        </p>
+    </form>
+{% endblock %}
