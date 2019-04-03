@@ -3,7 +3,7 @@ from appdir import app, db
 from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, NewLoansType,\
     CreateAutoLoanForm, CreateStudentLoanForm, CreateHomeLoanForm
 from flask_login import current_user, login_user, logout_user, login_required
-from appdir.models import Patron, BankAccount, PatronBankAccounts, PatronLoanAccounts, LoanType
+from appdir.models import Patron, BankAccount, PatronBankAccounts, PatronLoanAccounts, LoanType, Loan
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
 
 # routes contains the logic for all of our pages
@@ -80,18 +80,18 @@ def accounts(id):
 def loans(id):
     form = NewLoansType()
     if form.validate_on_submit():
-        loansType = form.loansChoice.data
-        if loansType == "Auto Loans":
+        loanType = form.loansChoice.data
+        if loanType == "Auto Loans":
             flash("Auto Loans Selected")
             return redirect(url_for('newAutoLoan', id=current_user.get_id()))
-        elif loansType == "Student Loans":
+        elif loanType == "Student Loans":
             flash("Student Loans Selected")
             return redirect(url_for('newStudentLoan', id=current_user.get_id()))
-        elif loansType == "Home Loans":
+        elif loanType == "Home Loans":
             flash("Home Loans Selected")
             return redirect(url_for('newHomeLoan', id=current_user.get_id()))
         else:
-            flash(loansType + " Selected")
+            flash(loanType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
 
     return render_template('loans.html', form=form)
@@ -135,27 +135,29 @@ def newCheckingAccount(id):
 def newAutoLoan(id):
     form = CreateAutoLoanForm()
     if form.validate_on_submit():
-        newAutoLoan = LoanType()
+        newAutoLoan = Loan()
         newLoanRelation = PatronLoanAccounts()
 
-        newAutoLoan.loanType = "Auto"
-        newAutoLoan.LoansBalance = 0
-        newAutoLoan.accountName = form.accountName.data
+        newAutoLoan.loanCategory = "Student"
+        newAutoLoan.loanBalance = 0
+        newAutoLoan.loanPayment = 0
+        newAutoLoan.startDate = "04/03/2019"
+        newAutoLoan.endDate = "Never"
 
         # Provisionally adds this account to the DB so it gets a unique ID
         db.session.add(newAutoLoan)
         db.session.flush()
-
+        id = current_user.get_id()
         # Use that unique ID, and the current user's sessions ID to create the relationship
-        newLoanRelation.id_bankAccount = newAutoLoan.id
-        newLoanRelation.id_patron = current_user.get_id()
+        newLoanRelation.id_loan = newAutoLoan.id
+        newLoanRelation.id_patron = id
 
         db.session.add(newLoanRelation)
         db.session.commit()
 
         flash("Auto loan successfully requested!")
         return redirect(url_for('accounts', id=current_user.get_id()))
-
+    flash(id)
     return render_template('newAutoLoan.html', title='Open a Auto Loan', form=form)
 
 
@@ -164,27 +166,29 @@ def newAutoLoan(id):
 def newStudentLoan(id):
     form = CreateStudentLoanForm()
     if form.validate_on_submit():
-        newStudentLoan = LoanType()
+        newStudentLoan = Loan()
         newLoanRelation = PatronLoanAccounts()
 
-        newStudentLoan.loanType = "Student"
-        newStudentLoan.LoansBalance = 0
-        newStudentLoan.accountName = form.accountName.data
+        newStudentLoan.loanCategory = "Student"
+        newStudentLoan.loanBalance = 0
+        newStudentLoan.loanPayment = 0
+        newStudentLoan.startDate = "04/03/2019"
+        newStudentLoan.endDate = "Never"
 
         # Provisionally adds this account to the DB so it gets a unique ID
         db.session.add(newStudentLoan)
         db.session.flush()
-
+        id = current_user.get_id()
         # Use that unique ID, and the current user's sessions ID to create the relationship
-        newLoanRelation.id_bankAccount = newStudentLoan.id
-        newLoanRelation.id_patron = current_user.get_id()
+        newLoanRelation.id_loan = newStudentLoan.id
+        newLoanRelation.id_patron = id
 
         db.session.add(newLoanRelation)
         db.session.commit()
 
         flash("Student loan successfully requested!")
         return redirect(url_for('loans', id=current_user.get_id()))
-
+    flash(id)
     return render_template('newStudentLoan.html', title='Open a Student Loan', form=form)
 
 
@@ -196,24 +200,27 @@ def newHomeLoan(id):
         newHomeLoan = LoanType()
         newLoanRelation = PatronLoanAccounts()
 
-        newHomeLoan.loanType = "Home"
-        newHomeLoan.LoansBalance = 0
-        newHomeLoan.accountName = form.accountName.data
+        newHomeLoan.loanCategory = "Home"
+        newHomeLoan.loanBalance = 0
+        newHomeLoan.loanPayment = 0
+        newHomeLoan.startDate = "04/03/2019"
+        newHomeLoan.endDate = "Never"
 
         # Provisionally adds this account to the DB so it gets a unique ID
         db.session.add(newHomeLoan)
         db.session.flush()
+        id = current_user.get_id()
 
         # Use that unique ID, and the current user's sessions ID to create the relationship
-        newLoanRelation.id_bankAccount = newHomeLoan.id
-        newLoanRelation.id_patron = current_user.get_id()
+        newLoanRelation.id_loan = newHomeLoan.id
+        newLoanRelation.id_patron = id
 
         db.session.add(newLoanRelation)
         db.session.commit()
 
         flash("Home loan successfully requested!")
         return redirect(url_for('loans', id=current_user.get_id()))
-
+    flash(id)
     return render_template('newHomeLoan.html', title='Open a Home Loan', form=form)
 
 

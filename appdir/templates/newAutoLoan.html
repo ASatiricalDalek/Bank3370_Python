@@ -5,24 +5,6 @@
 
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.accountName.label }}
-            <br>
-            {{ form.accountName(size=32) }}
-            <br>
-            {% for error in form.accountName.errors %}
-            <span>{{ [ error ] }}</span>
-            {% endfor %}
-        </p>
-     <p>
-            {{ form.loanPayment.label }}
-            <br>
-            {{ form.loanPayment(size=32) }}
-            <br>
-            {% for error in form.loanPayment.errors %}
-            <span>{{ [ error ] }}</span>
-            {% endfor %}
-        </p>
     <p>
             {{ form.loanBalance.label }}
             <br>
@@ -32,16 +14,6 @@
             <span>{{ [ error ] }}</span>
             {% endfor %}
     </p>
-
-    <p>
-            {{ form.loanPaymentDate.label }}
-            <br>
-            {{ form.loanPaymentDate(size=32) }}
-            <br>
-            {% for error in form.loanPaymentDate.errors %}
-            <span>{{ [ error ] }}</span>
-            {% endfor %}
-        </p>
 
     <p>
             {{ form.submit }}

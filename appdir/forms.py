@@ -52,24 +52,15 @@ class NewLoansType(FlaskForm):
 
 
 class CreateAutoLoanForm(FlaskForm):
-        accountName = StringField('Account Name', validators=[DataRequired()])
-        loanPayment = FloatField('Auto loan Payment')
-        loanBalance = FloatField('Auto loan Balance')
-        loanPaymentDate = DateField('Auto Loan Payment Date')
+        loanBalance = FloatField('Auto loan Payment')
         submit = SubmitField('Submit', validators=[DataRequired()])
 
 
 class CreateStudentLoanForm(FlaskForm):
-            accountName = StringField('Account Name', validators=[DataRequired()])
-            loanPayment = FloatField('Student loan Payment')
             loanBalance = FloatField('Student loan Balance')
-            loanPaymentDate = DateField('Student Loan Payment Date')
             submit = SubmitField('Submit', validators=[DataRequired()])
 
 
 class CreateHomeLoanForm(FlaskForm):
-            accountName = StringField('Account Name', validators=[DataRequired()])
-            loanPayment = FloatField('Home Loan Payment')
-            loanBalance = FloatField('Home Loan Balance')
-            loanPaymentDate = DateField('Home Loan Payment Date')
+            loanBalance = FloatField('Home Loan Payment')
             submit = SubmitField('Submit', validators=[DataRequired()])
