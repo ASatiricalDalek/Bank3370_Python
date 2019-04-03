@@ -1,18 +1,20 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
 from appdir.forms import *
-from math import floor
+from math import floor, pow
 from flask_login import current_user, login_user, logout_user, login_required
-from appdir.models import Patron, BankAccount, PatronBankAccounts, PatronLoanAccounts, LoanType, Loan
+from appdir.models import *
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
 
 # routes contains the logic for all of our pages
+
 
 @app.route('/')
 @app.route('/index')
 def index():
     x = getPatronAccounts(current_user.get_id())
     return render_template('home.html', title='Home', bankaccounts=x)
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -325,4 +327,50 @@ def tran(id):
     # user is load form for the first time
     else:
         return render_template('transfer.html', title='Transfer', form=form)
+
+
+@app.route('/creditScore', methods=['GET', 'POST'])
+def creditScore():
+    form = CreditScoreForm()
+    if form.validate_on_submit():
+        averageAge = form.averageAge.data
+        hardInquiries = form.hardInquiries.data
+        creditUtilization = form.creditUtilization.data
+        latePay = form.latePay.data
+        totalAccounts = form.totalAccounts.data
+        derogatoryMarks = form.derogatoryMarks.data
+
+        if (averageAge < 0 or hardInquiries < 0 or creditUtilization < 0 or latePay < 0 or totalAccounts <0 or derogatoryMarks <0):
+            flash("Please enter positive numeric values")
+            return render_template('creditScore.html', title='Credit Score', form=form)
+
+        if (derogatoryMarks < 1 and totalAccounts > 8 and hardInquiries < 3 and latePay < 1 and creditUtilization < 10 and
+                    averageAge>24):
+            creditScore=800
+        else:
+            creditScore=600
+        flash("Congratulations your Credit Score is " + str(creditScore))
+        return render_template('creditScore.html', title='Credit Score', form=form, creditScore=creditScore)
+    return render_template('creditScore.html', title='Credit Score', form=form)
+
+
+@app.route('/estimateInterest/<id>', methods=['GET', 'POST'])
+@login_required
+def estimateInterest(id):
+    form = EstimateInterestForm()
+    if form.validate_on_submit():
+        account = form.accountType.data
+        startingfunds = form.startingFunds.data
+        months = form.monthsOfInterest.data
+        accountinfo = BankAccountType.query.filter_by(accountType=account).first()
+        interestrate = accountinfo.accountInterestRate
+        if(startingfunds<0 or months<0):
+            flash("Please enter positive numeric values")
+            return render_template('estimateInterest.html', title='Estimate Interest', form=form)
+        else:
+            powermath = pow((1+interestrate), months)
+            estimateinterest = startingfunds*powermath
+            flash("Congratulations your Estimated Interest return is $" + str(round(estimateinterest,2)))
+            return render_template('estimateInterest.html', title='Estimate Interest', form=form, estimateinterest=estimateinterest)
+    return render_template('estimateInterest.html', title='Estimate Interest', form=form)
 

@@ -91,3 +91,22 @@ class MakeTransfer(FlaskForm):
     originaccount = SelectField(label="From Account", choices=[], validators=[DataRequired()], id='from_account')
     destaccount = SelectField(label="To Account", choices=[], validators=[DataRequired()], id='to_account')
     submit = SubmitField(label="Transfer")
+
+
+
+class CreditScoreForm(FlaskForm):
+    averageAge = FloatField('Average age of credit history', default=0.0)
+    hardInquiries = FloatField('Hard Inquiries', default=0.0)
+    creditUtilization = FloatField('Credit Utilization Percent', default=0.0)
+    latePay = FloatField('Late Payments', default=0.0)
+    totalAccounts = FloatField('Total Accounts', default=0.0)
+    derogatoryMarks = FloatField('Derogatory Marks', default=0.0)
+    submit = SubmitField('Credit Score')
+
+
+class EstimateInterestForm(FlaskForm):
+    choices = [('checking', 'Checking'), ('saving', 'Savings'), ('retirement', 'Retirement')]
+    startingFunds = FloatField(label='Starting Funds', default=0.0)
+    monthsOfInterest = FloatField(label='Years Of Interest', default=0.0)
+    accountType = RadioField(label='Account Type', choices=choices)
+    submit = SubmitField(label='Estimate Interest')

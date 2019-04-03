@@ -1,0 +1,72 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>What is your Credit Score?</h1>
+    <!-- The login form, as defined by the login class from forms.py and then passed to this template -->
+    <form action="" method="post" novalidate>
+        <!-- Implemented for security reasons -->
+        {{ form.hidden_tag() }}
+        <p>
+            <!-- Form object containing these HTML objects is passed to this HTML page -->
+            {{ form.averageAge.label }}
+            <br>
+            {{ form.averageAge(size=32) }}
+            <br>
+            <!-- If there is an error, we catch it with this -->
+            {% for error in form.averageAge.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.hardInquiries.label }}
+            <br>
+            {{ form.hardInquiries(size=32) }}
+            <br>
+            {% for error in form.hardInquiries.errors %}
+            <span>[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <!-- Form object containing these HTML objects is passed to this HTML page -->
+            {{ form.creditUtilization.label }}
+            <br>
+            {{ form.creditUtilization(size=32) }}
+            <br>
+            <!-- If there is an error, we catch it with this -->
+            {% for error in form.creditUtilization.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.latePay.label }}
+            <br>
+            {{ form.latePay(size=32) }}
+            <br>
+            {% for error in form.latePay.errors %}
+            <span>[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <!-- Form object containing these HTML objects is passed to this HTML page -->
+            {{ form.totalAccounts.label }}
+            <br>
+            {{ form.totalAccounts(size=32) }}
+            <br>
+            <!-- If there is an error, we catch it with this -->
+            {% for error in form.totalAccounts.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.derogatoryMarks.label }}
+            <br>
+            {{ form.derogatoryMarks(size=32) }}
+            <br>
+            {% for error in form.derogatoryMarks.errors %}
+            <span>[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit }}</p>
+    </form>
+{% endblock %}
