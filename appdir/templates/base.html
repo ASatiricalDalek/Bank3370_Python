@@ -25,8 +25,8 @@
         <a id="Active" href="{{ url_for('dep', id=current_user.get_id()) }}">Deposit</a> |
         <a id="Active" href="{{ url_for('tran', id=current_user.get_id()) }}">Transfer</a> |
         <a id="Active" href="{{ url_for('loans', id=current_user.get_id()) }}">Loans</a> |
-        <a href="{{ url_for('creditScore', id=current_user.get_id() )}}">Credit Score</a> |
-        <a href="{{ url_for('estimateInterest', id=current_user.get_id() )}}">Estimate Interest</a> |
+        <a id="Active" href="{{ url_for('creditScore', id=current_user.get_id() )}}">Credit Score</a> |
+        <a id="Active" href="{{ url_for('estimateInterest', id=current_user.get_id() )}}">Estimate Interest</a> |
         <a id="Active" href="{{ url_for('logout') }}">Logout</a>
         <a id="titleName">Bank3370</a>
         {% endif %}
