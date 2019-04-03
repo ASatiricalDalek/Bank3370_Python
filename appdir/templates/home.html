@@ -4,10 +4,14 @@
 <!-- Inserts all the code in this block in the corresponding content block in base.html -->
 {% block content %}
     <h1>Welcome to Bank 3370</h1>
-    {% if bankaccounts %}
+    {% if bankaccounts != None %}
     {% for account in bankaccounts %}
-    <ul>
-        <li>{{ account.name }}...........{{ account.balance }}</li>
+    <ul id="accountList">
+        <li>
+            {{ account.accountName }}
+            .............................................................................
+            ${{ account.accountBalance }}
+        </li>
     </ul>
     {% endfor %}
     {% endif %}
