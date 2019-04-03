@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
+from appdir.accounts import getPatronAccounts
+from flask_login import current_user
 # No custom variations in Flask_WTF
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from appdir.models import Patron, BankAccountType
+from appdir.models import Patron, BankAccountType, BankAccount, PatronBankAccounts
 
 # Define the login class using the WTForms library in Python
 # This library also contains code to generate the HTML elements so we don't need to define those
@@ -44,12 +46,15 @@ class NewAccountType(FlaskForm):
     submit = SubmitField(label="Open my Account")
 
 
+class MakeDeposit(FlaskForm):
+    amount = FloatField('Deposit Amount', validators=[DataRequired(message="Please enter amount in numeric format. Example: 200 or 200.00")], id='dep_amount')
+    # choices is filled at run time from routes.py
+    accountChoice = SelectField(label="Select Account", choices =[], validators=[DataRequired()], id='select_account')
+    submit = SubmitField(label="Deposit")
 
-class NewLoanType (FlaskForm) :
-    choices = [('Auto' , 'Auto'), ('')]
-class CreateAutoLoanForm(FlaskForm):
-        accountName = StringField('Account Name', validators=[DataRequired()])
-        loanPayment = FloatField('Account Payment')
-        loanBalance = FloatField('Account Balance')
 
-        submit = SubmitField('Submit', validators=[DataRequired()])
+class MakeTransfer(FlaskForm):
+    tamount = FloatField('Transfer Amount', validators=[DataRequired(message="Please enter amount in numeric format. Example: 200 or 200.00")], id='dep_amount')
+    originaccount = SelectField(label="From Account", choices=[], validators=[DataRequired()], id='from_account')
+    destaccount = SelectField(label="To Account", choices=[], validators=[DataRequired()], id='to_account')
+    submit = SubmitField(label="Transfer")

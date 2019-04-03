@@ -19,6 +19,8 @@
         {% else %}
         <a href="{{ url_for('logout') }}">Logout</a>
         <a href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a>
+        <a href="{{ url_for('dep', id=current_user.get_id()) }}">Deposit</a>
+        <a href="{{ url_for('tran', id=current_user.get_id()) }}">Transfer</a>
         {% endif %}
     </div>
     <hr>

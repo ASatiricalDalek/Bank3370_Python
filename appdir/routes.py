@@ -1,9 +1,11 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, NewLoansType
+from appdir.accounts import getPatronAccounts
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, MakeDeposit, MakeTransfer
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
+from math import floor
 
 # routes contains the logic for all of our pages
 
@@ -11,7 +13,6 @@ from werkzeug.urls import url_parse # used to redirect users to the page they we
 @app.route('/index')
 def index():
     return render_template('home.html', title = 'Home')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -67,31 +68,11 @@ def accounts(id):
             flash(accountType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
     else:
-        thisPatronsAccounts = PatronBankAccounts()
+        thisPatronsAccounts = getPatronAccounts(current_user.get_id())
+        flash(thisPatronsAccounts)
 
-        listOfAccounts = thisPatronsAccounts.query.filter_by(id_patron=current_user.get_id()).all()
         # Using this list of all the account IDs, query the bankAccount table to find all this patron's accounts
     return render_template('accounts.html', form=form)
-
-
-@app.route('/loans/<id>', methods=['GET', 'POST'])
-@login_required
-def loans(id):
-    form = NewLoansType()
-    if form.validate_on_submit():
-        loansType = form.accountChoice.data
-        if loansType == "Auto Loans":
-            flash("Auto Loans Selected")
-            return redirect(url_for('newCheckingAccount', id=current_user.get_id()))
-        elif loansType == "Student loans":
-            flash("Student Loans Selected")
-        elif loansType == "Home Loans":
-            flash("Home Loans Selected")
-        else:
-            flash(loansType + " Selected")
-        return redirect(url_for('loans', id=current_user.get_id()))
-
-    return render_template('loans.html', form=form)
 
 
 @app.route('/accounts/<id>/new_account', methods=['GET', 'POST'])
@@ -124,40 +105,7 @@ def newCheckingAccount(id):
         flash("Checking account successfully created!")
         return redirect(url_for('accounts', id=current_user.get_id()) )
 
-    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
-
-
-@app.route('/loans/<id>/new_loans', methods=['GET', 'POST'])
-@login_required
-def newAutoLoan(id):
-    form = CreateAutoLoanForm()
-    if form.validate_on_submit():
-        newLoan = LoanType()
-        newLoanRelation = PatronLoanAccount()
-
-        newAccount.accountType = "Checking"
-        newAccount.accountBalance = 0
-        newAccount.accountName = form.accountName.data
-        if (form.insurance.data):
-            newAccount.insurance = 1
-        else:
-            newAccount.insurance = 0
-
-        # Provisionally adds this account to the DB so it gets a unique ID
-        db.session.add(newAccount)
-        db.session.flush()
-
-        # Use that unique ID, and the current user's sessions ID to create the relationship
-        newAccountRelation.id_bankAccount = newAccount.id
-        newAccountRelation.id_patron = current_user.get_id()
-
-        db.session.add(newAccountRelation)
-        db.session.commit()
-
-        flash("Checking account successfully created!")
-        return redirect(url_for('accounts', id=current_user.get_id()) )
-
-    return render_template('newCheckingAccount.html', title='Open a Checking Account' ,form=form)
+    return render_template('newCheckingAccount.html', title='Open a Checking Account', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -176,3 +124,88 @@ def register():
         flash("Congratulations " + form.firstName.data + " you are now a registered user")
         return redirect(url_for('login'))
     return(render_template('register.html', title='Register', form=form))
+
+
+@app.route('/accounts/<id>/deposit', methods=['GET', 'POST'])
+@login_required
+def dep(id):
+
+    form = MakeDeposit()
+    x = getPatronAccounts(current_user.get_id())
+    # this will be a list of tuples to be used as a data source for our account listing
+    newList = []
+    for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
+        newList.append((account.accountName, account.accountName))
+    form.accountChoice.choices = newList
+
+    if form.validate_on_submit():
+        value = form.accountChoice.data
+        accountToDep = BankAccount.query.filter_by(accountName= value).first()
+        depAmount = form.amount.data
+        depAmount= (floor(depAmount*100)/100)  # drops decimal places after hundredths without rounding
+        if depAmount<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('deposit.html', title='Deposit', form=form)
+        else:
+            accountToDep.accountBalance += depAmount
+            db.session.commit()
+            flash("Deposit of $" + str(depAmount) + " to " + value + " was successful!")
+            return redirect(url_for('index'))
+    else:
+        return render_template('deposit.html', title='Deposit', form=form)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+    # valueCheck= BankAccount.query.filter_by(accountName= 'Robs Checking').first()
+    # valueCheck.accountBalance +=200
+    # value=valueCheck.accountBalance
+    # db.session.commit()
+
+
+@app.route('/accounts/<id>/transfer', methods=['GET', 'POST'])
+@login_required
+def tran(id):
+    form = MakeTransfer()
+    x = getPatronAccounts(current_user.get_id())
+    # this will be a list of tuples to be used as a data source for our account listing
+    newList = []
+    for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
+        newList.append((account.accountName, account.accountName))
+    form.originaccount.choices = newList
+    form.destaccount.choices = newList
+
+    # user attempts to perform a transfer
+    if form.validate_on_submit():
+        oacc = form.originaccount.data
+        dacc = form.destaccount.data
+        fromacc = BankAccount.query.filter_by(accountName=oacc).first()
+        toacc = BankAccount.query.filter_by(accountName=dacc).first()
+
+        tamt = form.tamount.data
+        tamt = (floor(tamt*100)/100)  # drops decimal places after hundredths without rounding
+
+        # If users origin account has insufficient funds, the transfer will fail
+        if fromacc.accountBalance<tamt:
+            flash("Insufficient funds in "+oacc+" to complete transfer. Please try again.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # if user tries to transfer to and from the same account, transfer will will
+        elif fromacc == toacc:
+            flash("Please select unique origin and destination accounts.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        elif tamt<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # user has entered valid parameters
+        else:
+            fromacc.accountBalance -= tamt
+            toacc.accountBalance += tamt
+
+            db.session.commit()
+            flash("Transfer from "+oacc+" to "+dacc+" of $"+str(tamt)+" was successful!")
+            return redirect(url_for('index'))
+    # user is load form for the first time
+    else:
+        return render_template('transfer.html', title='Transfer', form=form)
