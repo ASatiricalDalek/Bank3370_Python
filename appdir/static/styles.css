@@ -1,0 +1,97 @@
+h1 { font-size: 80;
+    font-family: 'Roboto Slab', serif;
+    color: #e9425d;}
+
+#nav {
+    font-size: 80;
+    font-family: 'Roboto Slab', serif;
+    color: #292929;
+    text-decoration: none;
+}
+
+
+a {
+    text-decoration: none;
+    font-family: 'Roboto Slab', serif;
+    color: #292929;
+}
+
+#Active:hover {
+    color: #292929;
+    background-color: #e9425d;
+}
+
+label{
+    font-family: 'Roboto', sans-serif;
+    color: #292929;
+
+}
+
+#accountList{
+    font-family: 'Roboto', sans-serif;
+    color: #292929;
+}
+
+#font1 {
+    font-family: 'Roboto Slab', serif;
+    color: #e9425d;
+    text-align: right;
+}
+
+#font2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+#flash{
+    font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #e9425d;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
+
+input[type=submit]
+{
+   font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #e9425d;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
+input[type=submit]:hover
+{
+   font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #f28e9e;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
+
+#titleName{
+    float:right;
+    font-family: 'Roboto Slab', serif;
+    color: #e9425d;
+    text-align: right;
+}
+
+input[type=text]
+{
+    font-family: 'Roboto', sans-serif;
+
+}
+
+input[type=select]
+{
+        font-family: 'Roboto', sans-serif;
+}
+
+.dropdown
+{
+        font-family: 'Roboto', sans-serif;
+}
