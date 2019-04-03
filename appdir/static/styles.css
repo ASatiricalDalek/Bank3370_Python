@@ -95,3 +95,18 @@ input[type=select]
 {
         font-family: 'Roboto', sans-serif;
 }
+
+.amnts, .names
+{
+    border-bottom: 1px solid black;
+}
+
+.amnts
+{
+    text-align: right;
+}
+
+.names
+{
+    text-align: left;
+}
