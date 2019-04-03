@@ -79,3 +79,19 @@ input[type=submit]:hover
     color: #e9425d;
     text-align: right;
 }
+
+input[type=text]
+{
+    font-family: 'Roboto', sans-serif;
+
+}
+
+input[type=select]
+{
+        font-family: 'Roboto', sans-serif;
+}
+
+.dropdown
+{
+        font-family: 'Roboto', sans-serif;
+}

@@ -13,7 +13,8 @@ from math import floor
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('home.html', title = 'Home')
+    x = getPatronAccounts(current_user.get_id())
+    return render_template('home.html', title = 'Home', bankaccounts=x)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -59,22 +60,18 @@ def accounts(id):
     if form.validate_on_submit():
         accountType = form.accountChoice.data
         if accountType == "Checking":
-            flash("Checking Account Selected")
+            # flash("Checking Account Selected")
             return redirect(url_for('newCheckingAccount', id=current_user.get_id()))
         elif accountType == "Savings":
-            flash("Savings Account Selected")
+            # flash("Savings Account Selected")
             return redirect(url_for('newSavingsAccount', id=current_user.get_id()))
         elif accountType == "Retirement":
-            flash("Retirement Account Selected")
+            # flash("Retirement Account Selected")
             return redirect(url_for('newRetirementAccount', id=current_user.get_id()))
         else:
             flash(accountType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
-    else:
-        thisPatronsAccounts = getPatronAccounts(current_user.get_id())
-        # flash(thisPatronsAccounts)
 
-        # Using this list of all the account IDs, query the bankAccount table to find all this patron's accounts
     return render_template('accounts.html', form=form)
 
 
