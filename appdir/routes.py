@@ -1,16 +1,19 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, CreditScoreForm,\
+    EstimateInterestForm
 from flask_login import current_user, login_user, logout_user, login_required
-from appdir.models import Patron, BankAccount, PatronBankAccounts
+from appdir.models import Patron, BankAccount, PatronBankAccounts, BankAccountType
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
-
+from math import pow
 # routes contains the logic for all of our pages
+
 
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('home.html', title = 'Home')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -113,11 +116,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         patron = Patron()
-        creditscore.creditScoreAverageAge = form.averageAge.data
-        creditscore.creditScoreHardInquiries = form.hardInquiries.data
-        creditscore.creditScore = form.creditUtilization.data
-        creditscore.creditScoreAverageAge = form.averageAge.data
-        creditscore.creditScore = form.averageAge.data
+        patron.patronFirstName = form.firstName.data
         patron.patronLastName = form.lastName.data
         patron.patronEmail = form.email.data
         patron.setPassword(form.password.data)
@@ -125,24 +124,43 @@ def register():
         db.session.commit()
         flash("Congratulations " + form.firstName.data + " you are now a registered user")
         return redirect(url_for('login'))
-    return(render_template('register.html', title='Register', form=form))
+    return render_template('register.html', title='Register', form=form)
+
 
 @app.route('/creditScore', methods=['GET', 'POST'])
-def creditscore():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = creditscore()
+def creditScore():
+    form = CreditScoreForm()
     if form.validate_on_submit():
-        patroncr = Patron()
-        patron. = form.firstName.data
-        creditscore.creditScoreAverageAge = form.averageAge.data
-        creditscore.creditScoreHardInquiries = form.hardInquiries.data
-        creditscore.creditScoreCreditUtilization = form.creditUtilization.data
-        creditscore.creditScoreLatePay = form.latePay.data
-        creditscore.creditScoreTotalAccounts = form.totalAccounts.data
-        creditscore.creditScoreDerogatoryMarks = form.derogatoryMarks.data
-        patron.patronLastName = form.lastName.data
+        averageAge = form.averageAge.data
+        hardInquiries = form.hardInquiries.data
+        creditUtilization = form.creditUtilization.data
+        latePay = form.latePay.data
+        totalAccounts = form.totalAccounts.data
+        derogatoryMarks = form.derogatoryMarks.data
+        if (derogatoryMarks<1 and totalAccounts>8 and hardInquiries<3 and latePay<1 and creditUtilization<10 and
+                    averageAge>24):
+            creditScore=800
+        else:
+            creditScore=600
+        flash("Congratulations your Credit Score is " + str(creditScore))
+        return render_template('creditScore.html', title='Credit Score', form=form, creditScore=creditScore)
+    return render_template('creditScore.html', title='Credit Score', form=form)
 
-        flash("Congratulations your Credit Score is " + form..data + " you are now a registered user")
-        return redirect(url_for('login'))
-    return(render_template('creditScore.html', title='Credit Score', form=form))
+
+@app.route('/estimateInterest/<id>', methods=['GET', 'POST'])
+@login_required
+def estimateInterest(id):
+    form = EstimateInterestForm()
+    if form.validate_on_submit():
+        account = form.accountType.data
+        startingfunds = form.startingFunds.data
+        months = form.monthsOfInterest.data
+        accountinfo = BankAccountType.query.filter_by(accountType=account).first()
+        interestrate = accountinfo.accountInterestRate
+        powermath = pow((1+interestrate), months)
+        estimateinterest = startingfunds*powermath
+
+        flash("Congratulations your Estimated Interest return is $" + str(round(estimateinterest,2)))
+        return render_template('estimateInterest.html', title='Estimate Interest', form=form,
+                               estimateinterest=estimateinterest)
+    return render_template('estimateInterest.html', title='Estimate Interest', form=form)

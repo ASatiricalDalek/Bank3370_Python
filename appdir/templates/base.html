@@ -19,6 +19,8 @@
         {% else %}
         <a href="{{ url_for('logout') }}">Logout</a>
         <a href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a>
+        <a href="{{ url_for('creditScore', id=current_user.get_id() )}}">Credit Score</a>
+        <a href="{{ url_for('estimateInterest', id=current_user.get_id() )}}">Estimate Interest</a>
         {% endif %}
     </div>
     <hr>

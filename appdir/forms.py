@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 # No custom variations in Flask_WTF
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from appdir.models import Patron, BankAccountType
 
@@ -45,10 +45,18 @@ class NewAccountType(FlaskForm):
 
 
 class CreditScoreForm(FlaskForm):
-    averageAge = StringField('Average Age', validators=[DataRequired()])
-    hardInquiries = StringField('Hard Inquiries', validators=[DataRequired()])
-    creditUtilization = StringField('Credit Utilization', validators=[DataRequired()])
-    latePay = StringField('Late Payments', validators=[DataRequired()])
-    totalAccounts = StringField('Total Accounts', validators=[DataRequired()])
-    derogatoryMarks = StringField('Derogatory Marks', validators=[DataRequired()])
-    submit = SubmitField('CreditScore')
+    averageAge = FloatField('Average age of credit history', default=0.0)
+    hardInquiries = FloatField('Hard Inquiries', default=0.0)
+    creditUtilization = FloatField('Credit Utilization Percent', default=0.0)
+    latePay = FloatField('Late Payments', default=0.0)
+    totalAccounts = FloatField('Total Accounts', default=0.0)
+    derogatoryMarks = FloatField('Derogatory Marks', default=0.0)
+    submit = SubmitField('Credit Score')
+
+
+class EstimateInterestForm(FlaskForm):
+    choices = [('checking', 'Checking'), ('saving', 'Savings'), ('retirement', 'Retirement')]
+    startingFunds = FloatField(label='Starting Funds', default=0.0)
+    monthsOfInterest = FloatField(label='Years Of Interest', default=0.0)
+    accountType = RadioField(label='Account Type', choices=choices)
+    submit = SubmitField(label='Estimate Interest')
