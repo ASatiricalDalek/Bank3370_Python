@@ -1,0 +1,40 @@
+h1 { font-size: 80;
+    font-family: 'Roboto Slab', serif;
+    color: #e9425d;}
+
+#nav {
+    font-size: 80;
+    font-family: 'Roboto Slab', serif;
+    color: #292929;
+    text-decoration: none;
+}
+
+
+a {
+    text-decoration: none;
+    font-family: 'Roboto Slab', serif;
+    color: #292929;
+}
+
+#Active:hover {
+    color: #292929;
+    background-color: #e9425d;
+}
+
+label{
+    font-family: 'Roboto', sans-serif;
+    color: #292929;
+    background-color: #e9425d;
+}
+
+#font1 {
+    font-family: 'Roboto Slab', serif;
+}
+
+#font2 {
+    font-family: 'Roboto', sans-serif;
+}
+
+#flash{
+
+}
