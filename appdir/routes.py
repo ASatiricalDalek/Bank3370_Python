@@ -137,7 +137,12 @@ def creditScore():
         latePay = form.latePay.data
         totalAccounts = form.totalAccounts.data
         derogatoryMarks = form.derogatoryMarks.data
-        if (derogatoryMarks<1 and totalAccounts>8 and hardInquiries<3 and latePay<1 and creditUtilization<10 and
+        
+        if (averageAge < 0 or hardInquiries < 0 or creditUtilization < 0 or latePay < 0 or totalAccounts <0 or derogatoryMarks <0):
+            flash("Please enter positive numeric values")
+            return render_template('creditScore.html', title='Credit Score', form=form)
+
+        if (derogatoryMarks < 1 and totalAccounts > 8 and hardInquiries < 3 and latePay < 1 and creditUtilization < 10 and
                     averageAge>24):
             creditScore=800
         else:
@@ -157,10 +162,12 @@ def estimateInterest(id):
         months = form.monthsOfInterest.data
         accountinfo = BankAccountType.query.filter_by(accountType=account).first()
         interestrate = accountinfo.accountInterestRate
-        powermath = pow((1+interestrate), months)
-        estimateinterest = startingfunds*powermath
-
-        flash("Congratulations your Estimated Interest return is $" + str(round(estimateinterest,2)))
-        return render_template('estimateInterest.html', title='Estimate Interest', form=form,
-                               estimateinterest=estimateinterest)
+        if(startingfunds<0 or months<0):
+            flash("Please enter positive numeric values")
+            return render_template('estimateInterest.html', title='Estimate Interest', form=form)
+        else:
+            powermath = pow((1+interestrate), months)
+            estimateinterest = startingfunds*powermath
+            flash("Congratulations your Estimated Interest return is $" + str(round(estimateinterest,2)))
+            return render_template('estimateInterest.html', title='Estimate Interest', form=form, estimateinterest=estimateinterest)
     return render_template('estimateInterest.html', title='Estimate Interest', form=form)
