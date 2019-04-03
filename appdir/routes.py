@@ -11,7 +11,8 @@ from werkzeug.urls import url_parse # used to redirect users to the page they we
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('home.html', title = 'Home')
+    x = getPatronAccounts(current_user.get_id())
+    return render_template('home.html', title='Home', bankaccounts=x)
 
 
 @app.route('/login', methods=['GET', 'POST'])
