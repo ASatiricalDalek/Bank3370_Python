@@ -25,7 +25,9 @@
         <a id="Active" href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a> |
         <a id="Active" href="{{ url_for('dep', id=current_user.get_id()) }}">Deposit</a> |
         <a id="Active" href="{{ url_for('tran', id=current_user.get_id()) }}">Transfer</a>
+            <a id="titleName">Bank3370</a>
         {% endif %}
+
     </div>
     <hr>
     <!-- Any flashed messages sent to the template are assigned to the messages variable (Tutorial Pt 3 -->

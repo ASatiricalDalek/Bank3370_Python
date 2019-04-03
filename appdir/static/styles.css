@@ -24,11 +24,18 @@ a {
 label{
     font-family: 'Roboto', sans-serif;
     color: #292929;
-    background-color: #e9425d;
+
+}
+
+#accountList{
+    font-family: 'Roboto', sans-serif;
+    color: #292929;
 }
 
 #font1 {
     font-family: 'Roboto Slab', serif;
+    color: #e9425d;
+    text-align: right;
 }
 
 #font2 {
@@ -36,5 +43,39 @@ label{
 }
 
 #flash{
+    font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #e9425d;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
 
+input[type=submit]
+{
+   font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #e9425d;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
+input[type=submit]:hover
+{
+   font-family: 'Roboto Slab', serif;
+    font-size:'70px';
+    color: #ffffff;
+    background-color: #f28e9e;
+    border-style:solid;
+    border-size:3px;
+    border-color:#292929;
+}
+
+#titleName{
+    float:right;
+    font-family: 'Roboto Slab', serif;
+    color: #e9425d;
+    text-align: right;
 }
