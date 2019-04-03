@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
 # No custom variations in Flask_WTF
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField, FloatField,\
+    DateField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from appdir.models import Patron, BankAccountType
-
+from datetime import date
 # Define the login class using the WTForms library in Python
 # This library also contains code to generate the HTML elements so we don't need to define those
 # On the page
@@ -40,16 +41,33 @@ class NewAccountType(FlaskForm):
     # This *should* be pulled from the database, but it's not
     # Choices are in the format (value, display)
     choices = [('Checking', 'Checking'), ('Savings', 'Savings'), ('Retirement', 'Retirement')]
-    accountChoice = RadioField(label="Select and account type", choices=choices, validators=[DataRequired()])
+    accountChoice = RadioField(label="Select an account type", choices=choices, validators=[DataRequired()])
     submit = SubmitField(label="Open my Account")
 
 
+class NewLoansType(FlaskForm):
+    choices = [('Auto Loans', 'Auto Loans'), ('Student Loans', 'Student Loans'), ('Home Loans', 'Home Loans')]
+    loansChoice = RadioField (label="Select a Loans type", choices=choices, validators=[DataRequired()])
+    submit = SubmitField(label="Open Loans Type")
 
-class NewLoanType (FlaskForm) :
-    choices = [('Auto' , 'Auto'), ('')]
+
 class CreateAutoLoanForm(FlaskForm):
         accountName = StringField('Account Name', validators=[DataRequired()])
-        loanPayment = FloatField('Account Payment')
-        loanBalance = FloatField('Account Balance')
-
+        loanPayment = FloatField('Auto loan Payment')
+        loanBalance = FloatField('Auto loan Balance')
+        loanPaymentDate = DateField('Auto Loan Payment Date')
         submit = SubmitField('Submit', validators=[DataRequired()])
+
+
+class CreateStudentLoanForm(FlaskForm):
+            accountName = StringField('Account Name', validators=[DataRequired()])
+            loanPayment = FloatField('Student loan Payment')
+            loanBalance = FloatField('Student loan Balance')
+            submit = SubmitField('Submit', validators=[DataRequired()])
+
+
+class CreateHomeLoanForm(FlaskForm):
+            accountName = StringField('Account Name', validators=[DataRequired()])
+            loanPayment = FloatField('Student Loan Payment')
+            loanBalance = FloatField('Student Loan Balance')
+            submit = SubmitField('Submit', validators=[DataRequired()])

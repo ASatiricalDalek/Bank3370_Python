@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Select the Loan type {{ current_user.get_id() }}</h1>
-    <br>
+    <h1>Specify your home loan details</h1>
+
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
-            {{ form.loansChoice.lable }}
+            {{ form.accountName.label }}
             <br>
-            {{ form.loansChoice }}
-            {% for error in form.loansChoice.errors %}
+            {{ form.accountName(size=32) }}
+            <br>
+            {% for error in form.accountName.errors %}
             <span>{{ [ error ] }}</span>
             {% endfor %}
         </p>
-        <p>
+    <p>
             {{ form.submit }}
         </p>
     </form>
