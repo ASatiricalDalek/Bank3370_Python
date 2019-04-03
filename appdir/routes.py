@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
+from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, CreateSavingsAccountForm,  NewAccountType
 from appdir.accounts import getPatronAccounts
 from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, MakeDeposit, MakeTransfer
 from flask_login import current_user, login_user, logout_user, login_required
@@ -62,8 +63,10 @@ def accounts(id):
             return redirect(url_for('newCheckingAccount', id=current_user.get_id()))
         elif accountType == "Savings":
             flash("Savings Account Selected")
+            return redirect(url_for('newSavingsAccount', id=current_user.get_id()))
         elif accountType == "Retirement":
             flash("Retirement Account Selected")
+            return redirect(url_for('newRetirementAccount', id=current_user.get_id()))
         else:
             flash(accountType + " Selected")
         return redirect(url_for('accounts', id=current_user.get_id()))
@@ -75,7 +78,7 @@ def accounts(id):
     return render_template('accounts.html', form=form)
 
 
-@app.route('/accounts/<id>/new_account', methods=['GET', 'POST'])
+@app.route('/accounts/<id>/new_Checking_account', methods=['GET', 'POST'])
 @login_required
 def newCheckingAccount(id):
     form = CreateCheckingAccountForm()
@@ -106,6 +109,72 @@ def newCheckingAccount(id):
         return redirect(url_for('accounts', id=current_user.get_id()) )
 
     return render_template('newCheckingAccount.html', title='Open a Checking Account', form=form)
+
+
+@app.route('/accounts/<id>/new_Savings_account', methods=['GET', 'POST'])
+@login_required
+def newSavingsAccount(id):
+    form = CreateSavingsAccountForm()
+    if form.validate_on_submit():
+        newAccount = BankAccount()
+        newAccountRelation = PatronBankAccounts()
+
+        newAccount.accountType = "Savings"
+        newAccount.accountBalance = 0
+        newAccount.accountName = form.accountName.data
+        if (form.insurance.data):
+            newAccount.insurance = 1
+        else:
+            newAccount.insurance = 0
+
+        # Provisionally adds this account to the DB so it gets a unique ID
+        db.session.add(newAccount)
+        db.session.flush()
+
+        # Use that unique ID, and the current user's sessions ID to create the relationship
+        newAccountRelation.id_bankAccount = newAccount.id
+        newAccountRelation.id_patron = current_user.get_id()
+
+        db.session.add(newAccountRelation)
+        db.session.commit()
+
+        flash("Savings account successfully created!")
+        return redirect(url_for('accounts', id=current_user.get_id()) )
+
+    return render_template('newSavingsAccount.html', title='Open a Savings Account' ,form=form)
+
+
+@app.route('/accounts/<id>/new_Retirement_account', methods=['GET', 'POST'])
+@login_required
+def newRetirementAccount(id):
+    form = CreateSavingsAccountForm()
+    if form.validate_on_submit():
+        newAccount = BankAccount()
+        newAccountRelation = PatronBankAccounts()
+
+        newAccount.accountType = "Retirement"
+        newAccount.accountBalance = 0
+        newAccount.accountName = form.accountName.data
+        if (form.insurance.data):
+            newAccount.insurance = 1
+        else:
+            newAccount.insurance = 0
+
+        # Provisionally adds this account to the DB so it gets a unique ID
+        db.session.add(newAccount)
+        db.session.flush()
+
+        # Use that unique ID, and the current user's sessions ID to create the relationship
+        newAccountRelation.id_bankAccount = newAccount.id
+        newAccountRelation.id_patron = current_user.get_id()
+
+        db.session.add(newAccountRelation)
+        db.session.commit()
+
+        flash("Retirement account successfully created!")
+        return redirect(url_for('accounts', id=current_user.get_id()) )
+
+    return render_template('newRetirementAccount.html', title='Open a Retirement Account' ,form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
