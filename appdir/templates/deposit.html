@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <style>
+    span{
+        color: red;
+        font-weight: bold;
+    }
+    </style>
+
+    <h1>Make a Deposit</h1>
+
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+    <p>
+        {{ form.accountChoice.label }}
+        <br>
+        {{ form.accountChoice }}
+    </p>
+        <p>
+            {{ form.amount.label }}
+            <br>
+            {{ form.amount(size=32) }}
+            <br>
+            {% for error in form.amount.errors %}
+            <span>{{  error  }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit }}
+        </p>
+    </form>
+{% endblock %}
+

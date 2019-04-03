@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Specify your home loan details</h1>
+
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+    <p>
+            {{ form.loanBalance.label }}
+            <br>
+            {{ form.loanBalance(size=32) }}
+            <br>
+            {% for error in form.loanBalance.errors %}
+            <span>{{ [ error ] }}</span>
+            {% endfor %}
+    </p>
+    <p>
+            {{ form.submit }}
+        </p>
+    </form>
+{% endblock %}
