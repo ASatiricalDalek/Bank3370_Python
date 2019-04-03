@@ -8,6 +8,8 @@
     {% else %}
     <title>Welcome to Bank 3370</title>
     {% endif %}
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}"> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/structure.css') }}">
 </head>
 <body>
     <!-- Navigation as it appears on all pages -->
@@ -27,7 +29,7 @@
     <!-- Any flashed messages sent to the template are assigned to the messages variable (Tutorial Pt 3 -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <ul>
+    <ul id="flash">
         {% for message in messages %}
         <li>{{ message }}</li>
         {% endfor %}
@@ -35,6 +37,8 @@
     {% endif %}
     {% endwith %}
     <!-- Start of content for pages that inherit this template -->
-    {% block content %}{% endblock %}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>

@@ -1,0 +1,53 @@
+.container
+{
+    display: grid;
+    grid-template-columns: 10% 20% 20% 20% 20% 10%;
+}
+h1
+{
+    grid-column-start: 3;
+    grid-column-end: 5;
+    text-align: center;
+}
+form
+{
+    grid-row-start: 2;
+    grid-column-start: 3;
+    grid-column-end: 5;
+}
+
+ul
+{
+    list-style: none;
+}
+
+input[type=text]
+{
+    width: 98%;
+}
+
+input[type=submit]
+{
+    width: 100%;
+}
+
+input[type=radio]
+{
+    width: 50%;
+    margin-top: 8px;
+}
+
+label
+{
+    font-size: 18px;
+}
+
+select
+{
+    width: 100%;
+}
+
+#flash
+{
+    text-align: center;
+}
