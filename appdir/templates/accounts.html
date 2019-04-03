@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Welcome to your account {{ current_user.get_id() }}</h1>
+    <h1>Open a New Account</h1>
     <br>
-    <form action="" method="post" novalidate>
+    <form class="form" action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.accountChoice.lable }}

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700|Roboto:300" rel="stylesheet">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles.css') }}">
     <meta charset="UTF-8">
     <!-- If title is passed to the template -->
     {% if title %}
@@ -8,26 +10,31 @@
     {% else %}
     <title>Welcome to Bank 3370</title>
     {% endif %}
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}"> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/structure.css') }}">
 </head>
 <body>
     <!-- Navigation as it appears on all pages -->
     <div id="nav">
-        <a href="{{ url_for('index') }}">Home</a>
+        <a id="Active" href="{{ url_for('index') }}">Home</a> |
         {% if current_user.is_anonymous %}
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
+        <a id="Active" href="{{ url_for('login') }}">Login</a> |
+        <a id="Active" href="{{ url_for('register') }}">Register</a>
         {% else %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-        <a href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a>
-        <a href="{{ url_for('dep', id=current_user.get_id()) }}">Deposit</a>
-        <a href="{{ url_for('tran', id=current_user.get_id()) }}">Transfer</a>
+        <a id="Active" href="{{ url_for('accounts', id=current_user.get_id()) }}">Accounts</a> |
+        <a id="Active" href="{{ url_for('dep', id=current_user.get_id()) }}">Deposit</a> |
+        <a id="Active" href="{{ url_for('tran', id=current_user.get_id()) }}">Transfer</a> |
+        <a id="Active" href="{{ url_for('loans', id=current_user.get_id()) }}">Loans</a> |
+        <a id="Active" href="{{ url_for('logout') }}">Logout</a>
+        <a id="titleName">Bank3370</a>
         {% endif %}
+
     </div>
     <hr>
     <!-- Any flashed messages sent to the template are assigned to the messages variable (Tutorial Pt 3 -->
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <ul>
+    <ul id="flash">
         {% for message in messages %}
         <li>{{ message }}</li>
         {% endfor %}
@@ -35,6 +42,23 @@
     {% endif %}
     {% endwith %}
     <!-- Start of content for pages that inherit this template -->
-    {% block content %}{% endblock %}
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
 </body>
+<footer>
+    <table style="width:100%;margin:0px; padding-top: 40px;">
+        <tr>
+            <td id="font2" colspan="2">
+                <table style="width:99%; border-top:1px black solid; position: absolute; bottom: 5px;">
+                    <tr>
+                        <td style="width:50%; text-align: left;"> &copy; 2019 The Greatest Group Inc., All rights reserved.</td>
+                        <td style="width:50%; text-align: right;"> website made in 2019<br> featuring lots of blood, sweat, and tears</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</footer>
 </html>
