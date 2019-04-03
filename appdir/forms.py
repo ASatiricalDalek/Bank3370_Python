@@ -65,6 +65,25 @@ class MakeDeposit(FlaskForm):
     # choices is filled at run time from routes.py
     accountChoice = SelectField(label="Select Account", choices =[], validators=[DataRequired()], id='select_account')
     submit = SubmitField(label="Deposit")
+class NewLoansType(FlaskForm):
+    choices = [('Auto Loans', 'Auto Loans'), ('Student Loans', 'Student Loans'), ('Home Loans', 'Home Loans')]
+    loansChoice = RadioField (label="Select a Loans type", choices=choices, validators=[DataRequired()])
+    submit = SubmitField(label="Open Loans Type")
+
+
+class CreateAutoLoanForm(FlaskForm):
+        loanBalance = FloatField('Auto loan Payment')
+        submit = SubmitField('Submit', validators=[DataRequired()])
+
+
+class CreateStudentLoanForm(FlaskForm):
+            loanBalance = FloatField('Student loan Balance')
+            submit = SubmitField('Submit', validators=[DataRequired()])
+
+
+class CreateHomeLoanForm(FlaskForm):
+            loanBalance = FloatField('Home Loan Payment')
+            submit = SubmitField('Submit', validators=[DataRequired()])
 
 
 class MakeTransfer(FlaskForm):

@@ -95,7 +95,7 @@ class PatronLoanAccounts(db.Model):
     __tablename__ = 'patronLoanAccounts'
 
     id_patron = db.Column(db.Integer, db.ForeignKey('patron.id'), primary_key=True)
-    id_account = db.Column(db.Integer, db.ForeignKey('loans.id'), primary_key=True)
+    id_loan = db.Column(db.Integer, db.ForeignKey('loans.id'), primary_key=True)
 
 
 @login.user_loader
