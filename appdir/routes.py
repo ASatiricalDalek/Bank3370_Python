@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from appdir import app, db
-from appdir.forms import LoginForm, RegistrationForm, CreateCheckingAccountForm, NewAccountType, NewLoansType,\
-    CreateAutoLoanForm, CreateStudentLoanForm, CreateHomeLoanForm
+from appdir.forms import *
+from math import floor
 from flask_login import current_user, login_user, logout_user, login_required
 from appdir.models import Patron, BankAccount, PatronBankAccounts, PatronLoanAccounts, LoanType, Loan
 from werkzeug.urls import url_parse # used to redirect users to the page they were at before they logged in
@@ -240,3 +240,88 @@ def register():
         flash("Congratulations " + form.firstName.data + " you are now a registered user")
         return redirect(url_for('login'))
     return(render_template('register.html', title='Register', form=form))
+
+@app.route('/accounts/<id>/deposit', methods=['GET', 'POST'])
+@login_required
+def dep(id):
+
+    form = MakeDeposit()
+    x = getPatronAccounts(current_user.get_id())
+    # this will be a list of tuples to be used as a data source for our account listing
+    newList = []
+    for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
+        newList.append((account.accountName, account.accountName))
+    form.accountChoice.choices = newList
+
+    if form.validate_on_submit():
+        value = form.accountChoice.data
+        accountToDep = BankAccount.query.filter_by(accountName= value).first()
+        depAmount = form.amount.data
+        depAmount= (floor(depAmount*100)/100)  # drops decimal places after hundredths without rounding
+        if depAmount<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('deposit.html', title='Deposit', form=form)
+        else:
+            accountToDep.accountBalance += depAmount
+            db.session.commit()
+            flash("Deposit of $" + str(depAmount) + " to " + value + " was successful!")
+            return redirect(url_for('index'))
+    else:
+        return render_template('deposit.html', title='Deposit', form=form)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+
+    # value = dict(form.accountChoice.choices).get(form.accountChoice.data)
+    # valueCheck= BankAccount.query.filter_by(accountName= 'Robs Checking').first()
+    # valueCheck.accountBalance +=200
+    # value=valueCheck.accountBalance
+    # db.session.commit()
+
+
+@app.route('/accounts/<id>/transfer', methods=['GET', 'POST'])
+@login_required
+def tran(id):
+    form = MakeTransfer()
+    x = getPatronAccounts(current_user.get_id())
+    # this will be a list of tuples to be used as a data source for our account listing
+    newList = []
+    for account in x:
+        # data source expects a value and display member, so pass ID and account name of the object
+        newList.append((account.accountName, account.accountName))
+    form.originaccount.choices = newList
+    form.destaccount.choices = newList
+
+    # user attempts to perform a transfer
+    if form.validate_on_submit():
+        oacc = form.originaccount.data
+        dacc = form.destaccount.data
+        fromacc = BankAccount.query.filter_by(accountName=oacc).first()
+        toacc = BankAccount.query.filter_by(accountName=dacc).first()
+
+        tamt = form.tamount.data
+        tamt = (floor(tamt*100)/100)  # drops decimal places after hundredths without rounding
+
+        # If users origin account has insufficient funds, the transfer will fail
+        if fromacc.accountBalance<tamt:
+            flash("Insufficient funds in "+oacc+" to complete transfer. Please try again.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # if user tries to transfer to and from the same account, transfer will will
+        elif fromacc == toacc:
+            flash("Please select unique origin and destination accounts.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        elif tamt<=0:
+            flash("Please enter positive numerical amounts only.")
+            return render_template('transfer.html', title='Transfer', form=form)
+        # user has entered valid parameters
+        else:
+            fromacc.accountBalance -= tamt
+            toacc.accountBalance += tamt
+
+            db.session.commit()
+            flash("Transfer from "+oacc+" to "+dacc+" of $"+str(tamt)+" was successful!")
+            return redirect(url_for('index'))
+    # user is load form for the first time
+    else:
+        return render_template('transfer.html', title='Transfer', form=form)
+
