@@ -72,7 +72,7 @@ def accounts(id):
         return redirect(url_for('accounts', id=current_user.get_id()))
     else:
         thisPatronsAccounts = getPatronAccounts(current_user.get_id())
-        flash(thisPatronsAccounts)
+        # flash(thisPatronsAccounts)
 
         # Using this list of all the account IDs, query the bankAccount table to find all this patron's accounts
     return render_template('accounts.html', form=form)
