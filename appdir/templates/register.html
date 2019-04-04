@@ -46,7 +46,7 @@
         <br>
         {{ form.confirmPassword(size=32) }}
         {% for error in form.confirmPassword.errors %}
-        <span>[{{ error }}]</span>
+        <span>{{ error }}</span>
         {% endfor %}
         <br>
     </p>

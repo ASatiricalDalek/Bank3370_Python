@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+    <style>
+    span{
+        color: red;
+        font-weight: bold;
+    }
+    </style>
 
 {% block content %}
     <h1>Open a New Account</h1>
@@ -10,7 +16,7 @@
             <br>
             {{ form.accountChoice }}
             {% for error in form.accountChoice.errors %}
-            <span>{{ [ error ] }}</span>
+            <span>{{  error  }}</span>
             {% endfor %}
         </p>
         <p>

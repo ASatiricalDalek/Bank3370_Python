@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
-
+    <style>
+    span{
+        color: red;
+        font-weight: bold;
+    }
+    </style>
 {% block content %}
     <h1>Select the Loan type</h1>
     <br>
@@ -10,7 +15,7 @@
             <br>
             {{ form.loansChoice }}
             {% for error in form.loansChoice.errors %}
-            <span>{{ [ error ] }}</span>
+            <span>{{  error  }}</span>
             {% endfor %}
         </p>
         <p>

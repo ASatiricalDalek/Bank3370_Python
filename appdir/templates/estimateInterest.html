@@ -24,7 +24,7 @@
             {{ form.monthsOfInterest(size=32) }}
             <br>
             {% for error in form.monthsOfInterest.errors %}
-            <span>[{{ error }}]</span>
+            <span>{{ error }}</span>
             {% endfor %}
         </p>
         <p>
