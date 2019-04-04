@@ -57,3 +57,10 @@ select
     grid-column-start: 3;
     grid-column-end: 5;
 }
+
+#logo
+{
+    grid-column-start: 2;
+    grid-column-end: 5;
+    padding-left: 275px;
+}
