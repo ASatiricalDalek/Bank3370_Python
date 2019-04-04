@@ -1,0 +1,43 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>We can calculate your interest for you.</h1>
+    <!-- The login form, as defined by the login class from forms.py and then passed to this template -->
+    <form action="" method="post" novalidate>
+        <!-- Implemented for security reasons -->
+        {{ form.hidden_tag() }}
+        <p>
+            <!-- Form object containing these HTML objects is passed to this HTML page -->
+            {{ form.startingFunds.label }}
+            <br>
+            {{ form.startingFunds(size=32) }}
+            <br>
+            <!-- If there is an error, we catch it with this -->
+            {% for error in form.startingFunds.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.monthsOfInterest.label }}
+            <br>
+            {{ form.monthsOfInterest(size=32) }}
+            <br>
+            {% for error in form.monthsOfInterest.errors %}
+            <span>[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <!-- Form object containing these HTML objects is passed to this HTML page -->
+            {{ form.accountType.label }}
+            <br>
+            {{ form.accountType(size=32) }}
+            <br>
+            <!-- If there is an error, we catch it with this -->
+            {% for error in form.accountType.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit }}</p>
+    </form>
+{% endblock %}
