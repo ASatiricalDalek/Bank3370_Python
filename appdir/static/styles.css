@@ -110,3 +110,9 @@ input[type=select]
 {
     text-align: left;
 }
+
+span{
+        color: red;
+        font-weight: bold;
+}
+

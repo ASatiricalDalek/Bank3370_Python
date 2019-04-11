@@ -26,6 +26,11 @@ input[type=text]
     width: 98%;
 }
 
+input[type=password]
+{
+    width: 98%;
+}
+
 input[type=submit]
 {
     width: 100%;
@@ -62,6 +67,5 @@ select
 {
     grid-column-start: 2;
     grid-column-end: 5;
-    padding-left: 275px;
-    position: relative;
+    padding-left: 10%;
 }

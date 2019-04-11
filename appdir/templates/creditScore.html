@@ -24,7 +24,7 @@
             {{ form.hardInquiries(size=32) }}
             <br>
             {% for error in form.hardInquiries.errors %}
-            <span>[{{ error }}]</span>
+            <span>{{ error }}</span>
             {% endfor %}
         </p>
         <p>
